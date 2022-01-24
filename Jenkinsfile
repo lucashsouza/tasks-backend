@@ -51,9 +51,18 @@ pipeline {
         stage ('Deploy Frontend') {
             steps {
                 dir('frontend') {
-                    git branch: 'main', url: 'https://github.com/lucashsouza/tasks-frontend'
+                    git branch: 'master', url: 'https://github.com/lucashsouza/tasks-frontend'
                     sh 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'TomcatLogin', path: '', url: 'http://localhost:8090/')], contextPath: 'tasks', war:'target/tasks.war'
+                }
+            }
+        }
+
+        stage ('Functional Test') {
+            steps {
+                dir('functional-test') {
+                    git branch: 'main', url: 'https://github.com/lucashsouza/tasks-functional-test'
+                    sh 'mvn test'
                 }
             }
         }
